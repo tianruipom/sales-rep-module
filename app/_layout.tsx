@@ -1,3 +1,4 @@
+
 import { LogtoConfig, LogtoProvider } from '@logto/rn';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
@@ -6,7 +7,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-
+import { LOGTO_APPID, LOGTO_ENDPOINT } from '@env';
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -19,8 +20,8 @@ export default function RootLayout() {
   }
 
   const config: LogtoConfig = {
-    endpoint: 'https://sso.pomstage.app/',
-    appId: 'hn2j3zpvn3rreoje4yx90',
+    endpoint: LOGTO_ENDPOINT || 'https://default-endpoint.com',
+    appId: LOGTO_APPID || 'default-app-id',
   };
   
 

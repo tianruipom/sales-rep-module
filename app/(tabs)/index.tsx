@@ -5,6 +5,7 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { LOGTO_CALLBACK } from '@env';
 import { useLogto } from '@logto/rn';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-native';
@@ -44,7 +45,16 @@ export default function HomeScreen() {
             <Button title="Sign out" onPress={async () => signOut()} />
           ) : (
             // Replace the redirect URI with your own
-            <Button title="Sign in" onPress={async () => signIn('v5.pomstage.mobile://oauthredirect')} />
+            <Button
+              title="Sign in"
+              onPress={async () => {
+                if (LOGTO_CALLBACK) {
+                  await signIn(LOGTO_CALLBACK);
+                } else {
+                  console.error('LOGTO_CALLBACK is not defined in the environment variables.');
+                }
+              }}
+            />
           )}
         
         <HelloWave />
