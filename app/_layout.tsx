@@ -1,13 +1,19 @@
 
+import { useColorScheme } from '@/hooks/useColorScheme';
 import { LogtoConfig, LogtoProvider } from '@logto/rn';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import "react-native-gesture-handler";
 import 'react-native-reanimated';
+import 'react-native-url-polyfill/auto';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { LOGTO_APPID, LOGTO_ENDPOINT } from '@env';
+
+import { ChatWrapper } from '@/components/ChatWrapper';
+import { StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -20,20 +26,32 @@ export default function RootLayout() {
   }
 
   const config: LogtoConfig = {
-    endpoint: LOGTO_ENDPOINT || 'https://default-endpoint.com',
-    appId: LOGTO_APPID || 'default-app-id',
+    endpoint: process.env.EXPO_PUBLIC_LOGTO_ENDPOINT || 'https://default-endpoint.com',
+    appId: process.env.EXPO_PUBLIC_LOGTO_APPID || 'default-app-id',
   };
-  
+
 
   return (
     <LogtoProvider config={config}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
+        <SafeAreaProvider>
+          <GestureHandlerRootView style={styles.container}>
+            <ChatWrapper>
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+              <StatusBar style="auto" />
+            </ChatWrapper>
+          </GestureHandlerRootView>
+
+        </SafeAreaProvider>
       </ThemeProvider>
     </LogtoProvider>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
